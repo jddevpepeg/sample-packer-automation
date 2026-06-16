@@ -9,9 +9,14 @@
         name: "*"
         state: latest
 
-    - name: Install nginx
+    - name: Install packages
       ansible.builtin.package:
-        name: nginx
+        name:
+          - nginx
+          - tmux
+          - git
+          - wget
+          - unzip
         state: present
 
     - name: Enable and start nginx service
