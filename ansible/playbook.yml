@@ -1,0 +1,24 @@
+---
+- name: Install and enable nginx
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Install nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present
+
+    - name: Enable and start nginx service
+      ansible.builtin.systemd:
+        name: nginx
+        enabled: true
+        state: started
+
+    - name: Verify nginx is running
+      ansible.builtin.service_facts:
+
+    - name: Assert nginx is active
+      ansible.builtin.assert:
+        that: ansible_facts.services['nginx.service'].state == 'running'
+        fail_msg: "nginx service is not running after install"
