@@ -32,7 +32,7 @@ variable "ami_name_prefix" {
 
 variable "source_ami_owner" {
   type    = string
-  default = "137112381938" # Amazon Linux 2023
+  default = "amazon"
 }
 
 # ---------------------------------------------------------------------------
