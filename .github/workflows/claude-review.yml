@@ -1,0 +1,51 @@
+name: Claude PR Review
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:
+  claude-review:
+    name: Claude Code Review
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Claude PR Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          direct_prompt: |
+            Review this pull request. Focus on:
+
+            **Packer (*.pkr.hcl)**
+            - Source AMI filters are safe and not overly broad
+            - Variables have sensible defaults and types
+            - Tags are present and meaningful
+            - SSH and IAM configurations follow least-privilege
+
+            **Ansible (*.yml / *.yaml under ansible/)**
+            - Tasks use fully-qualified collection names (ansible.builtin.*)
+            - Idempotency: tasks are safe to run multiple times
+            - Service and package names are correct for Amazon Linux 2023
+            - Assertions actually verify the intended state
+
+            **GitHub Actions (.github/workflows/*.yml)**
+            - Secrets are referenced, never hardcoded
+            - OIDC permissions are scoped to the minimum needed
+            - Steps have clear names
+
+            Be concise. Flag real problems or risky patterns. Skip stylistic nits unless they affect correctness or security.
