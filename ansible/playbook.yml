@@ -7,7 +7,7 @@
     - name: Update all packages
       ansible.builtin.dnf:
         name: "*"
-        state: latest
+        state: latest # noqa: package-latest
 
     - name: Install packages
       ansible.builtin.package:
