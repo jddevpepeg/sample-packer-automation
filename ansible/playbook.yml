@@ -17,6 +17,7 @@
           - git
           - wget
           - unzip
+          - rsync
         state: present
 
     - name: Enable and start nginx service
